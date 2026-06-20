@@ -395,38 +395,70 @@ function showToast(message) {
   setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
+// ── REGISTER SERVICE WORKER ──
+let swRegistration = null;
+
+async function registerSW() {
+  if (!('serviceWorker' in navigator)) return;
+  try {
+    swRegistration = await navigator.serviceWorker.register('/sw.js');
+    console.log('Service Worker registered');
+  } catch (err) {
+    console.error('SW registration failed:', err);
+  }
+}
+
 // ── NOTIFICATIONS ──
 notifyBtn.addEventListener('click', async () => {
   if (!('Notification' in window)) {
     showToast('❌ Notifications not supported');
     return;
   }
+
   const permission = await Notification.requestPermission();
+
   if (permission === 'granted') {
     notifyBtn.classList.add('active');
     notifyBtn.textContent = '🔔 Reminders On';
     localStorage.setItem('postcal-notify', 'true');
     showToast('🔔 Reminders enabled!');
+    await registerSW();
     scheduleNotifications();
   } else {
     showToast('❌ Permission denied');
   }
 });
 
+// ── SCHEDULE NOTIFICATIONS VIA SERVICE WORKER ──
 function scheduleNotifications() {
   const monthPosts = getMonthPosts();
+
   Object.entries(monthPosts).forEach(([day, dayPosts]) => {
-    dayPosts.forEach(post => {
+    dayPosts.forEach((post, index) => {
       if (!post.time) return;
+
       const [hours, minutes] = post.time.split(':').map(Number);
       const notifyAt = new Date(currentYear, currentMonth, Number(day), hours, minutes);
       const delay    = notifyAt - new Date();
-      if (delay > 0) {
+
+      if (delay <= 0) return;
+
+      const payload = {
+        delay,
+        title: 'PostCal Reminder 📅',
+        body:  `${MONTHS[currentMonth]} ${day}: ${post.topic}`,
+        tag:   `postcal-${currentYear}-${currentMonth}-${day}-${index}`
+      };
+
+      // use service worker if available, fallback to setTimeout
+      if (swRegistration?.active) {
+        swRegistration.active.postMessage({
+          type: 'SCHEDULE_NOTIFICATION',
+          payload
+        });
+      } else {
         setTimeout(() => {
-          new Notification('PostCal Reminder 📅', {
-            body: `${MONTHS[currentMonth]} ${day}: ${post.topic}`,
-            icon: '📅'
-          });
+          new Notification(payload.title, { body: payload.body, tag: payload.tag });
         }, delay);
       }
     });
@@ -696,7 +728,6 @@ panelOverlay.addEventListener('click', () => {
   panelPosts.style.display = 'none';
   panelForm.style.display  = 'none';
   closePanel();
-  buildCalendar();
 });
 
 // ── INIT ──
@@ -704,6 +735,9 @@ if (localStorage.getItem('postcal-notify') === 'true') {
   notifyBtn.classList.add('active');
   notifyBtn.textContent = '🔔 Reminders On';
 }
+
+registerSW();
+buildCalendar();
 
 // add count badge style
 const style = document.createElement('style');
