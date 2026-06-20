@@ -30,6 +30,8 @@ const prevMonthBtn   = document.getElementById('prevMonth');
 const nextMonthBtn   = document.getElementById('nextMonth');
 const notifyBtn      = document.getElementById('enableNotifications');
 const platformTags   = document.getElementById('platformTags');
+const panelOverlay   = document.getElementById('panelOverlay');
+const detailPanel    = document.getElementById('detailPanel');
 const exportBtn      = document.getElementById('exportBtn');
 const exportDropdown = document.getElementById('exportDropdown');
 const exportCSVBtn   = document.getElementById('exportCSV');
@@ -165,6 +167,7 @@ function selectDay(day) {
     openForm(null);
   }
 
+  openPanel();
   buildCalendar();
 }
 
@@ -318,6 +321,7 @@ closeBtn.addEventListener('click', () => {
   panelEmpty.style.display = 'flex';
   panelPosts.style.display = 'none';
   panelForm.style.display  = 'none';
+  closePanel();
   buildCalendar();
 });
 
@@ -671,6 +675,28 @@ exportPDFBtn.addEventListener('click', () => {
 
   exportDropdown.style.display = 'none';
   showToast('📄 PDF ready to print!');
+});
+
+// ── PANEL OPEN / CLOSE (mobile bottom sheet) ──
+function openPanel() {
+  detailPanel.classList.add('open');
+  panelOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePanel() {
+  detailPanel.classList.remove('open');
+  panelOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+panelOverlay.addEventListener('click', () => {
+  selectedDay = null;
+  panelEmpty.style.display = 'flex';
+  panelPosts.style.display = 'none';
+  panelForm.style.display  = 'none';
+  closePanel();
+  buildCalendar();
 });
 
 // ── INIT ──
