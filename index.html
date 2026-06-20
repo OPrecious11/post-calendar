@@ -18,11 +18,21 @@
       <div>
         <h1 class="app-title">PostCal</h1>
         <p class="app-subtitle">Your 30-day content schedule</p>
+        <p class="app-streak" id="streakCounter"></p>
       </div>
     </div>
-    <button class="btn-notify" id="enableNotifications">
-      🔔 Enable Reminders
-    </button>
+    <div class="header-actions">
+      <div class="export-wrapper">
+        <button class="btn-export" id="exportBtn">↗ Export</button>
+        <div class="export-dropdown" id="exportDropdown" style="display:none;">
+          <button class="export-option" id="exportCSV">📊 Export as CSV</button>
+          <button class="export-option" id="exportPDF">📄 Export as PDF</button>
+        </div>
+      </div>
+      <button class="btn-notify" id="enableNotifications">
+        🔔 Enable Reminders
+      </button>
+    </div>
   </header>
 
   <!-- PROGRESS BAR -->
@@ -69,11 +79,21 @@
         <p>Select a day to schedule your post</p>
       </div>
 
-      <!-- Form -->
-      <div class="panel-form" id="panelForm" style="display:none;">
+      <!-- Post list view -->
+      <div class="panel-posts" id="panelPosts" style="display:none;">
         <div class="panel-header">
           <h2 class="panel-day-label" id="panelDayLabel">Day 1</h2>
           <button class="btn-close" id="closePanel">✕</button>
+        </div>
+        <div class="posts-list" id="postsList"></div>
+        <button class="btn-add-new" id="addNewPost">+ Add New Post</button>
+      </div>
+
+      <!-- Form -->
+      <div class="panel-form" id="panelForm" style="display:none;">
+        <div class="panel-header">
+          <h2 class="panel-form-label" id="panelFormLabel">New Post</h2>
+          <button class="btn-close" id="backToList">✕</button>
         </div>
 
         <div class="form-group">
@@ -84,8 +104,27 @@
 
         <div class="form-group">
           <label class="form-label" for="postCaption">Caption / Notes</label>
-          <textarea class="form-textarea" id="postCaption" rows="4"
+          <textarea class="form-textarea" id="postCaption" rows="3"
             placeholder="Write your caption or key points..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Platform</label>
+          <div class="platform-tags" id="platformTags">
+            <button class="platform-btn" data-platform="instagram">📸 Instagram</button>
+            <button class="platform-btn" data-platform="twitter">🐦 Twitter</button>
+            <button class="platform-btn" data-platform="linkedin">💼 LinkedIn</button>
+            <button class="platform-btn" data-platform="tiktok">🎵 TikTok</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Post Status</label>
+          <div class="status-tags" id="statusTags">
+            <button class="status-btn" data-status="draft">✏️ Draft</button>
+            <button class="status-btn" data-status="ready">✅ Ready</button>
+            <button class="status-btn" data-status="posted">🚀 Posted</button>
+          </div>
         </div>
 
         <div class="form-group">
@@ -95,7 +134,6 @@
 
         <div class="panel-actions">
           <button class="btn-save" id="savePost">Save Post</button>
-          <button class="btn-clear" id="clearPost">Clear Day</button>
         </div>
       </div>
 
