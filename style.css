@@ -1,0 +1,451 @@
+/* ── RESET & BASE ── */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #0D0D0D;
+  --surface: #1A1A2E;
+  --surface-hover: rgba(255, 255, 255, 0.06);
+  --purple: #7B5EA7;
+  --purple-light: #9B7EC8;
+  --gold: #E8C547;
+  --gold-dim: rgba(232, 197, 71, 0.12);
+  --text: #F0F0F0;
+  --text-muted: #666680;
+  --border: rgba(255, 255, 255, 0.08);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  padding: 32px 40px;
+}
+
+/* ── HEADER ── */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-logo { font-size: 28px; }
+
+.app-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1;
+}
+
+.app-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+
+.btn-notify {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 9px 16px;
+  border-radius: 99px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-notify:hover,
+.btn-notify.active {
+  border-color: var(--purple);
+  color: var(--purple-light);
+  background: rgba(123, 94, 167, 0.1);
+}
+
+/* ── PROGRESS ── */
+.progress-section {
+  margin-bottom: 40px;
+}
+
+.progress-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.progress-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.progress-count {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.progress-track {
+  height: 2px;
+  background: var(--border);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--purple), var(--gold));
+  border-radius: 99px;
+  transition: width 0.5s ease;
+}
+
+/* ── MAIN LAYOUT ── */
+.app-main {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 32px;
+  align-items: start;
+}
+
+/* ── CALENDAR ── */
+.calendar-section {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 28px;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 4px;
+}
+
+.calendar-weekdays span {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  padding-bottom: 12px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0;
+}
+
+/* ── DAY CELL ── */
+.day-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 0;
+  cursor: pointer;
+  gap: 4px;
+}
+
+.day-number {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.day-cell:hover .day-number {
+  background: var(--surface-hover);
+}
+
+.day-cell.active .day-number {
+  background: var(--purple);
+  color: #fff;
+}
+
+.day-cell.scheduled .day-number {
+  color: var(--gold);
+}
+
+.day-cell.active.scheduled .day-number {
+  background: var(--purple);
+  color: #fff;
+}
+
+/* dot under number for scheduled days */
+.day-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: transparent;
+  transition: background 0.2s ease;
+}
+
+.day-cell.scheduled .day-dot {
+  background: var(--gold);
+}
+
+/* ── DETAIL PANEL ── */
+.detail-panel {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 24px;
+  position: sticky;
+  top: 32px;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 10px;
+  color: var(--text-muted);
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.panel-empty-icon { font-size: 28px; }
+
+/* ── PANEL FORM ── */
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.panel-day-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--gold);
+}
+
+.btn-close {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-close:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+/* ── FORM ELEMENTS ── */
+.form-group { margin-bottom: 16px; }
+
+.form-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  padding: 10px 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+  resize: none;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  border-color: var(--purple-light);
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.form-input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.3;
+  cursor: pointer;
+}
+
+/* ── PANEL ACTIONS ── */
+.panel-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.btn-save {
+  flex: 1;
+  background: var(--purple);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 11px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-save:hover { background: var(--purple-light); }
+
+.btn-clear {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 11px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-clear:hover {
+  border-color: #e05555;
+  color: #e05555;
+}
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 13px;
+  padding: 12px 18px;
+  border-radius: 99px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  transform: translateY(16px);
+  opacity: 0;
+  transition: all 0.25s ease;
+  pointer-events: none;
+}
+
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  body { padding: 20px 16px; }
+
+  .app-main {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-panel {
+    position: static;
+  }
+
+  .app-title { font-size: 20px; }
+}
+
+/* ── MONTH NAV ── */
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.month-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.btn-month-nav {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 20px;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-month-nav:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+/* today highlight */
+.day-cell.today .day-number {
+  border: 1.5px solid var(--purple);
+  color: var(--purple-light);
+}
+
+.day-cell.today.active .day-number {
+  background: var(--purple);
+  color: #fff;
+  border-color: var(--purple);
+}
+
+.day-empty {
+  pointer-events: none;
+}
